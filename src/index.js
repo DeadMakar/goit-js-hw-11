@@ -5,7 +5,7 @@ import { refs } from './js/refs';
 import { urlInfo } from './js/config';
 import updatePage from './js/update-page';
 import { fetchPhotos } from './js/axios';
-import { makeURL } from './js/make-url';
+import { makeURL, increaseCurrentPage } from './js/make-url';
 import { createMarkup } from './js/markup-creator';
 import { slowlyScroll } from './js/slowly-scroll';
 import { showLoader, hideLoader } from './js/loader-status';
@@ -13,9 +13,8 @@ import { showLoader, hideLoader } from './js/loader-status';
 const lightbox = new SimpleLightbox('.gallery a');
 
 let totalPage = 1;
-let currentPage = 1;
 let isLoading = false;
-console.log('currentPage:', currentPage, 'totalPage:', totalPage);
+console.log('currentPage:', urlInfo.currentPage, 'totalPage:', totalPage);
 refs.formRef.addEventListener('submit', handleSubmit);
 addEventListener('scroll', onScroll);
 
@@ -24,7 +23,6 @@ async function handleSubmit(e) {
   updatePage(e, refs.galleryWrapperRef);
 
   urlInfo.currentPage = 1;
-  currentPage = 1;
 
   urlInfo.category = refs.inputRef.value.trim();
   if (urlInfo.category === '') {
@@ -32,7 +30,7 @@ async function handleSubmit(e) {
   }
 
   try {
-    const valueQuery = await fetchPhotos(makeURL(urlInfo));
+    const valueQuery = await fetchPhotos(makeURL());
 
     if (valueQuery.hits.length === 0) {
       return Notiflix.Notify.info(
@@ -42,7 +40,9 @@ async function handleSubmit(e) {
 
     totalPage = Math.ceil(valueQuery.totalHits / 40);
     createMarkup(valueQuery, refs.galleryWrapperRef);
-    currentPage += 1;
+
+    increaseCurrentPage();
+
     slowlyScroll();
     lightbox.refresh();
   } catch (error) {
@@ -63,17 +63,19 @@ async function onScroll() {
   if (
     scrollTop + clientHeight >= scrollHeight &&
     !isLoading &&
-    currentPage <= totalPage
+    urlInfo.currentPage <= totalPage
   ) {
     showLoader();
     isLoading = true;
 
     try {
-      const valueQuery = await fetchPhotos(makeURL(urlInfo));
+      const valueQuery = await fetchPhotos(makeURL());
 
       if (valueQuery.hits.length > 0) {
         createMarkup(valueQuery, refs.galleryWrapperRef);
-        currentPage += 1;
+
+        increaseCurrentPage();
+
         slowlyScroll();
         lightbox.refresh();
       } else {
