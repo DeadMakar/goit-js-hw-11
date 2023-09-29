@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { urlInfo } from './config';
 
-export async function fetchPhotos(urlInfo) {
-  const response = await axios.get(urlInfo.BASE_URL);
+export async function fetchPhotos(url) {
+  const response = await axios.get(url);
   return response.data;
 }

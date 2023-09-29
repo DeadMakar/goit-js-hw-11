@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Page title</title>
     <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/gallery.css">
   </head>
   <body>
+
     <section id="wrapper">
+
       <form class="search-form" id="search-form">
         <input
           class="search-input"
@@ -18,11 +21,13 @@
         />
         <button class="search-btn" type="submit">Search</button>
       </form>
+
     </section>
+
     <main>
+
       <div class="gallery container"></div>
 
-      <!-- Infinite Scroll works on a container element with its child item elements -->
       <div class="scroller-status visually-hidden">
         <div class="infinite-scroll-request loader-ellips">
           <span class="loader-ellips__dot"></span>
@@ -31,7 +36,9 @@
           <span class="loader-ellips__dot"></span>
         </div>
       </div>
+
     </main>
+
     <script type="module" src="./index.js"></script>
   </body>
 </html>
