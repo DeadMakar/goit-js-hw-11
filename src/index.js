@@ -14,7 +14,9 @@ const lightbox = new SimpleLightbox('.gallery a');
 
 let totalPage = 1;
 let isLoading = false;
+
 console.log('currentPage:', urlInfo.currentPage, 'totalPage:', totalPage);
+
 refs.formRef.addEventListener('submit', handleSubmit);
 addEventListener('scroll', onScroll);
 
@@ -28,6 +30,8 @@ async function handleSubmit(e) {
   if (urlInfo.category === '') {
     return Notiflix.Notify.failure('Please, enter something');
   }
+
+  removeEventListener('scroll', onScroll);
 
   try {
     const valueQuery = await fetchPhotos(makeURL());
@@ -45,6 +49,10 @@ async function handleSubmit(e) {
 
     slowlyScroll();
     lightbox.refresh();
+
+    if (urlInfo.currentPage <= totalPage) {
+      addEventListener('scroll', onScroll);
+    }
   } catch (error) {
     console.log(error);
 
